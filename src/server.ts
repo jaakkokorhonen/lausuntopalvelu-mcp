@@ -1,5 +1,6 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { HTTPError } from 'got';
 import { handleGetProposal, handleSearchProposals } from './tools/proposals.js';
 import { logger } from './logger.js';
 
@@ -50,10 +51,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         throw new Error(`Tuntematon työkalu: ${request.params.name}`);
     }
   } catch (err: any) {
+    let errorMsg = err.message || String(err);
+
+    if (err instanceof HTTPError && err.response) {
+      try {
+        const body = JSON.parse(err.response.body as string);
+        if (body.error?.message?.value) {
+          errorMsg = body.error.message.value;
+        }
+      } catch {
+        // Ignoroidaan jäsennysvirheet
+      }
+    }
+
     logger.error({ err, tool: request.params.name }, 'Tool execution failed');
     return {
       isError: true,
-      content: [{ type: 'text', text: `Virhe: ${err.message || String(err)}` }]
+      content: [{ type: 'text', text: `Virhe: ${errorMsg}` }]
     };
   }
 });
