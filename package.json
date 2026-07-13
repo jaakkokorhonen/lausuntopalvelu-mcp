@@ -1,0 +1,25 @@
+{
+  "name": "lausuntopalvelu-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for lausuntopalvelu.fi API",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "start:http": "node dist/server-http.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1",
+    "express": "^4.19.2",
+    "got": "^13.0.0",
+    "pino": "^9.2.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "@types/express": "^4.17.21",
+    "typescript": "^5.5.2",
+    "tsx": "^4.15.7"
+  }
+}
